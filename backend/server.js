@@ -100,3 +100,5 @@ const server = app.listen(PORT, async () => {
 server.on('error', (err) => {
     console.error('SERVER ERROR:', err);
 });
+
+module.exports = app;
