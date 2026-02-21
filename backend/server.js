@@ -1,10 +1,10 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const path = require('path');
 const { query, initializeDB } = require('./db');
 const { generateToken, verifyToken } = require('./auth');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5050;

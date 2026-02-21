@@ -91,6 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkBalanceBtn = document.getElementById('checkBalanceBtn');
     if (checkBalanceBtn) {
         checkBalanceBtn.addEventListener('click', async () => {
+            const balanceEl = document.getElementById('balanceValue');
+
+            // If already shown, we can allow refreshing it
+            checkBalanceBtn.disabled = true;
+            checkBalanceBtn.textContent = 'Decrypting...';
+
             try {
                 const response = await fetch('/getBalance', {
                     method: 'POST',
@@ -103,17 +109,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     });
-                    document.getElementById('balanceValue').textContent = formattedBalance;
+
+                    balanceEl.textContent = formattedBalance;
                     document.getElementById('balanceDisplay').style.display = 'block';
                     showToast('Balance retrieved securely.', 'success');
                     triggerPopper();
+
+                    checkBalanceBtn.textContent = 'Check Balance';
                 } else {
                     const err = await response.json();
                     showToast('Error fetching balance: ' + err.message, 'error');
+                    checkBalanceBtn.textContent = 'Check Balance';
                 }
             } catch (error) {
                 console.error('Error:', error);
                 showToast('An error occurred while checking balance.', 'error');
+                checkBalanceBtn.textContent = 'Check Balance';
+            } finally {
+                checkBalanceBtn.disabled = false;
             }
         });
     }
