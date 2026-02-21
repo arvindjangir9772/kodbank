@@ -2,11 +2,15 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 console.log('Database Configuration Check:', {
-    host: process.env.DB_HOST ? 'Present' : 'MISSING',
-    user: process.env.DB_USER ? 'Present' : 'MISSING',
-    db: process.env.DB_NAME ? 'Present' : 'MISSING',
+    host: process.env.DB_HOST ? 'Detected ✅' : 'NOT DETECTED ❌',
+    user: process.env.DB_USER ? 'Detected ✅' : 'NOT DETECTED ❌',
+    db: process.env.DB_NAME ? 'Detected ✅' : 'NOT DETECTED ❌',
     port: process.env.DB_PORT || '3306 (Default)'
 });
+
+if (!process.env.DB_HOST) {
+    console.error('CRITICAL: DB_HOST environment variable is missing.');
+}
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
