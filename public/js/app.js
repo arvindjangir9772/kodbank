@@ -1,4 +1,23 @@
-// Kodbank Client-Side Logic
+// Toast Notification System
+function showToast(message, type = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'toast-out 0.3s ease-in forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     // Handle Registration
@@ -22,15 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    alert('Registration successful! Redirecting to login...');
-                    window.location.href = 'login.html';
+                    showToast('Registration successful! Redirecting to login...', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {
                     const err = await response.json();
-                    alert('Registration failed: ' + err.message);
+                    showToast('Registration failed: ' + err.message, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred during registration.');
+                showToast('An error occurred during registration.', 'error');
             }
         });
     }
@@ -53,16 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    localStorage.setItem('kodbank_user', data.uname || document.getElementById('uname').value);
-                    alert('Login successful! Welcome to Kodbank.');
-                    window.location.href = 'dashboard.html';
+                    const resData = await response.json();
+                    localStorage.setItem('kodbank_user', resData.uname || document.getElementById('uname').value);
+                    showToast('Login successful! Welcome to Kodbank.', 'success');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1000);
                 } else {
                     const err = await response.json();
-                    alert('Login failed: ' + err.message);
+                    showToast('Login failed: ' + err.message, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred during login.');
+                showToast('An error occurred during login.', 'error');
             }
         });
     }
@@ -85,14 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     document.getElementById('balanceValue').textContent = formattedBalance;
                     document.getElementById('balanceDisplay').style.display = 'block';
+                    showToast('Balance retrieved securely.', 'success');
                     triggerPopper();
                 } else {
                     const err = await response.json();
-                    alert('Error fetching balance: ' + err.message);
+                    showToast('Error fetching balance: ' + err.message, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while checking balance.');
+                showToast('An error occurred while checking balance.', 'error');
             }
         });
     }
@@ -110,9 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('kodbank_user');
-            // Clear cookie
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            window.location.href = 'login.html';
+            showToast('Logged out successfully.', 'info');
+            setTimeout(() => window.location.href = 'login.html', 800);
         });
     }
 });
