@@ -35,8 +35,8 @@ app.post('/register', async (req, res) => {
         let errorMsg = error.message;
         if (error.code === 'ER_NO_SUCH_TABLE') {
             errorMsg = 'Database tables not ready. Please refresh and try again in 5 seconds.';
-        } else if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
-            errorMsg = 'Could not connect to Aiven MySQL. Check your Vercel Environment Variables.';
+        } else if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT' || error.code === 'ENOTFOUND') {
+            errorMsg = `Cloud Connection Error: ${error.message}. Verify Vercel Variables & Aiven IP Filter (0.0.0.0/0).`;
         }
         res.status(500).json({ message: 'Error registering user', error: errorMsg });
     }
