@@ -9,16 +9,18 @@ console.log('Database Configuration Check:', {
     port: process.env.DB_PORT || '3306 (Default)'
 });
 
-if (!process.env.DB_HOST) {
-    console.error('CRITICAL: DB_HOST environment variable is missing.');
+const isConfigured = !!process.env.DB_HOST;
+
+if (!isConfigured) {
+    console.error('❌ CRITICAL ERROR: Environment variables are missing in Vercel Dashboard.');
 }
 
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST || 'MISSING_DB_HOST_IN_VERCEL_SETTINGS',
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306,
+    port: parseInt(process.env.DB_PORT) || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
