@@ -7,6 +7,9 @@ function showToast(message, type = 'success') {
         document.body.appendChild(container);
     }
 
+    // Clear existing toasts to prevent stacking
+    container.innerHTML = '';
+
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.innerHTML = `<span>${message}</span>`;
