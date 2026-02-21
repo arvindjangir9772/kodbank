@@ -16,6 +16,20 @@ app.use(cors());
 const frontendPath = path.join(process.cwd(), 'public');
 app.use(express.static(frontendPath, { index: 'register.html' }));
 
+// Initialize DB for Serverless environment
+let isDbInitialized = false;
+app.use(async (req, res, next) => {
+    if (!isDbInitialized) {
+        try {
+            await initializeDB();
+            isDbInitialized = true;
+        } catch (err) {
+            console.error('Initial DB Error:', err);
+        }
+    }
+    next();
+});
+
 // Routes
 
 // 1. User Registration
@@ -91,10 +105,9 @@ app.use((req, res) => {
     }
 });
 
-const server = app.listen(PORT, async () => {
+const server = app.listen(PORT, () => {
     console.log(`Kodbank Server running on http://localhost:${PORT}`);
     console.log(`Frontend path: ${frontendPath}`);
-    await initializeDB();
 });
 
 server.on('error', (err) => {
