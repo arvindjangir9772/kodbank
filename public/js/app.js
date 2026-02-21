@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {
                     const err = await response.json();
-                    showToast('Registration failed: ' + err.message, 'error');
+                    showToast(`Registration failed: ${err.error || err.message}`, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => window.location.href = 'dashboard.html', 1000);
                 } else {
                     const err = await response.json();
-                    showToast('Login failed: ' + err.message, 'error');
+                    showToast(`Login failed: ${err.error || err.message}`, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);

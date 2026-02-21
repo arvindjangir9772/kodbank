@@ -16,19 +16,8 @@ app.use(cors());
 const frontendPath = path.join(process.cwd(), 'public');
 app.use(express.static(frontendPath, { index: 'register.html' }));
 
-// Initialize DB for Serverless environment
-let isDbInitialized = false;
-app.use(async (req, res, next) => {
-    if (!isDbInitialized) {
-        try {
-            await initializeDB();
-            isDbInitialized = true;
-        } catch (err) {
-            console.error('Initial DB Error:', err);
-        }
-    }
-    next();
-});
+// Ensure DB is initialized on startup (for Vercel/Serverless warming)
+initializeDB().catch(err => console.error('Startup DB Error:', err));
 
 // Routes
 
@@ -43,7 +32,13 @@ app.post('/register', async (req, res) => {
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         console.error('Registration Error:', error);
-        res.status(500).json({ message: 'Error registering user', error: error.message });
+        let errorMsg = error.message;
+        if (error.code === 'ER_NO_SUCH_TABLE') {
+            errorMsg = 'Database tables not ready. Please refresh and try again in 5 seconds.';
+        } else if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+            errorMsg = 'Could not connect to Aiven MySQL. Check your Vercel Environment Variables.';
+        }
+        res.status(500).json({ message: 'Error registering user', error: errorMsg });
     }
 });
 
@@ -105,7 +100,7 @@ app.use((req, res) => {
     }
 });
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
     console.log(`Kodbank Server running on http://localhost:${PORT}`);
     console.log(`Frontend path: ${frontendPath}`);
 });
