@@ -1,6 +1,13 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
+console.log('Database Configuration Check:', {
+    host: process.env.DB_HOST ? 'Present' : 'MISSING',
+    user: process.env.DB_USER ? 'Present' : 'MISSING',
+    db: process.env.DB_NAME ? 'Present' : 'MISSING',
+    port: process.env.DB_PORT || '3306 (Default)'
+});
+
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
