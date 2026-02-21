@@ -14,7 +14,7 @@ Kodbank/
 │   ├── server.js           # Express app & API routes
 │   ├── .env                # Secret credentials (ignored by git)
 │   └── package.json        # Node dependencies
-├── frontend/               # Client-side interface
+├── public/                 # Client-side interface (Vercel standard)
 │   ├── css/
 │   │   └── style.css       # KodNest premium styles
 │   ├── js/

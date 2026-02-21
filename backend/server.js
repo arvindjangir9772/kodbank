@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-const frontendPath = path.resolve(__dirname, '../frontend');
+const frontendPath = path.join(process.cwd(), 'public');
 app.use(express.static(frontendPath, { index: 'register.html' }));
 
 // Routes
